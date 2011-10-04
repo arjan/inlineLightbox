@@ -98,6 +98,22 @@ $.widget("ui.inlineLightbox",
         var posx = Math.floor(100*(o.left-po.left)/(self.width-self.element.width()))+"%";
         var posy = "0%";
 
+        $(window).bind('resize.inlineLightbox', function() {
+                           self.curtain.css({height: Math.max($(window).height()+$(document).scrollTop(), $("html").outerHeight(true))});
+
+                           var aspect = $(this).width()/$(this).height();
+                           var targetWidth = (self.width-2*self.options.padding);
+                           var targetHeight = ((self.width-2*self.options.padding) / aspect);
+                           var h = self.containerElement.height()-self.img.height()+targetHeight;
+                           var targetTop = po.top;
+                           if ($(window).height()+$(document).scrollTop() < po.top+h) {
+                               targetTop = $(window).height()+$(document).scrollTop() - h;
+                           }
+                           self.containerElement.css({top: targetTop});
+
+                       });
+
+
         $("<img>")
             .addClass("pad")
             .appendTo(self.containerElement)
@@ -109,6 +125,13 @@ $.widget("ui.inlineLightbox",
                       var targetWidth = (self.width-2*self.options.padding);
                       var targetHeight = ((self.width-2*self.options.padding) / aspect);
 
+                      if (aspect < 1) {
+                          targetHeight = 0.7 * targetWidth;
+                          targetWidth = aspect * targetHeight;
+
+                      }
+
+
                       // make sure the image does not extend below the document body
                       var h = self.containerElement.height()-self.img.height()+targetHeight;
                       var targetTop = po.top;
@@ -116,7 +139,7 @@ $.widget("ui.inlineLightbox",
                           targetTop = $(window).height()+$(document).scrollTop() - h;
                       }
 
-                      self.curtain.css({height: Math.max($(window).height()+$(document).scrollTop(), $("body").outerHeight(true))});
+                      self.curtain.css({height: Math.max($(window).height()+$(document).scrollTop(), $("html").outerHeight(true))});
                       $(this)
                           .css({
                                    height: self.img.width()/aspect})
@@ -147,6 +170,8 @@ $.widget("ui.inlineLightbox",
         var self = this;
         self.curtain.animate({opacity: 0.0}, 150, function(){self.curtain.remove();});
         self.containerElement.animate({opacity: 0.0}, 150, function(){self.containerElement.remove();self.containerElement=null;});
+        $(window).unbind('resize.inlineLightbox');
+
         if (self.element.attr("id")) {
 //            document.location.hash = "";
         }
