@@ -105,7 +105,7 @@ $.widget("ui.inlineLightbox",
                            var targetWidth = (self.width-2*self.options.padding);
                            var targetHeight = ((self.width-2*self.options.padding) / aspect);
                            var h = self.containerElement.height()-self.img.height()+targetHeight;
-                           var targetTop = po.top;
+                           var targetTop = Math.max($(document).scrollTop(), po.top);
                            if ($(window).height()+$(document).scrollTop() < po.top+h) {
                                targetTop = $(window).height()+$(document).scrollTop() - h;
                            }
@@ -134,7 +134,7 @@ $.widget("ui.inlineLightbox",
 
                       // make sure the image does not extend below the document body
                       var h = self.containerElement.height()-self.img.height()+targetHeight;
-                      var targetTop = po.top;
+                      var targetTop = Math.max($(document).scrollTop(), po.top);
                       if ($(window).height()+$(document).scrollTop() < po.top+h) {
                           targetTop = $(window).height()+$(document).scrollTop() - h;
                       }
